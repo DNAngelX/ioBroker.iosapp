@@ -1,86 +1,132 @@
 <html>
-
 <head>
+    <link rel="stylesheet" type="text/css" href="../../lib/css/themes/jquery-ui/redmond/jquery-ui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
+    <script type="text/javascript" src="../../lib/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="../../lib/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../../js/translate.js"></script>
+    <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+    <script type="text/javascript" src="words.js"></script>
 
-	<!-- Load ioBroker scripts and styles-->
-	<link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
-	<link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
-
-	<script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
-	<script type="text/javascript" src="../../socket.io/socket.io.js"></script>
-
-	<script type="text/javascript" src="../../js/translate.js"></script>
-	<script type="text/javascript" src="../../lib/js/materialize.js"></script>
-	<script type="text/javascript" src="../../js/adapter-settings.js"></script>
-
-	<!-- Load our own files -->
-	<link rel="stylesheet" type="text/css" href="style.css" />
-	<script type="text/javascript" src="words.js"></script>
-
-	<script type="text/javascript">
-		// This will be called by the admin adapter when the settings page loads
-		function load(settings, onChange) {
-			// example: select elements with id=key and class=value and insert value
-			if (!settings) return;
-			$('.value').each(function () {
-				var $key = $(this);
-				var id = $key.attr('id');
-				if ($key.attr('type') === 'checkbox') {
-					// do not call onChange direct, because onChange could expect some arguments
-					$key.prop('checked', settings[id])
-						.on('change', () => onChange())
-						;
-				} else {
-					// do not call onChange direct, because onChange could expect some arguments
-					$key.val(settings[id])
-						.on('change', () => onChange())
-						.on('keyup', () => onChange())
-						;
-				}
-			});
-			onChange(false);
-			// reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
-			if (M) M.updateTextFields();
-		}
-
-		// This will be called by the admin adapter when the user presses the save button
-		function save(callback) {
-			// example: select elements with class=value and build settings object
-			var obj = {};
-			$('.value').each(function () {
-				var $this = $(this);
-				if ($this.attr('type') === 'checkbox') {
-					obj[$this.attr('id')] = $this.prop('checked');
-				} else if ($this.attr('type') === 'number') {
-					obj[$this.attr('id')] = parseFloat($this.val());
-				} else {
-					obj[$this.attr('id')] = $this.val();
-				}
-			});
-			callback(obj);
-		}
-	</script>
-
+    <style>
+        .container {
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            margin: 20px auto;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: calc(100% - 10px);
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .alert {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            color: #fff;
+            background-color: #28a745;
+            border-radius: 4px;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <h1>iOS App Settings</h1>
+        <form id="adapter-settings">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control value" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control value" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="wsPort">Port Websockets:</label>
+                <input type="number" class="form-control value" id="wsPort" name="wsPort" value="9192">
+            </div>
+        </form>
+        <div class="alert" id="alert">Settings saved</div>
+    </div>
+    <script type="text/javascript">
+        'use strict';
 
-	<div class="m adapter-container">
+        function load(settings, onChange) {
+            if (!settings) return;
 
-		<div class="row">
-			<div class="col s12 m4 l2">
-				<img src="iosapp.png" class="logo">
-			</div>
-		</div>
+            // Load and populate the settings if they exist
+            $('#username').val(settings.username || '');
+            $('#password').val(settings.password || '');
+            $('#wsPort').val(settings.wsPort || 9192);
 
-		<!-- Put your content here -->
+            // Call onChange when the values change
+            $('.value').change(function () {
+                onChange();
+            }).keyup(function () {
+                onChange();
+            });
 
-		<!-- For example columns with settings: -->
-		<div class="row">
-		</div>
+            onChange(false); // signal that initial load is done
+        }
 
-	</div>
+        function save(callback) {
+            var obj = {};
 
+            $('.value').each(function () {
+                var $this = $(this);
+                if ($this.attr('type') === 'checkbox') {
+                    obj[$this.attr('id')] = $this.prop('checked');
+                } else {
+                    obj[$this.attr('id')] = $this.val();
+                }
+            });
+
+            obj.wsPort = parseInt(obj.wsPort, 10) || 0;
+
+            if (!obj.username || !obj.password) {
+                alert('Username and Password are required.');
+                return;
+            }
+
+            callback(obj);
+            $('#alert').show().delay(3000).fadeOut();
+        }
+
+        $(document).ready(function() {
+            // Call load function with initial settings and onChange callback
+            socket.emit('getSettings', function (settings) {
+                load(settings, function () {
+                    // Handle changes, if any
+                    $('#adapter-settings').submit(function(event) {
+                        event.preventDefault(); // Prevent default form submission
+                        save(function(obj) {
+                            socket.emit('setSettings', obj, function () {
+                                console.log('Settings saved:', obj);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    </script>
 </body>
-
 </html>

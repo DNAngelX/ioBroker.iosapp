@@ -10,90 +10,68 @@
 
 **Tests:** ![Test and Release](https://github.com/DNAngelX/ioBroker.iosapp/workflows/Test%20and%20Release/badge.svg)
 
-## iosapp adapter for ioBroker
+## iOS App Adapter for ioBroker
 
-This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data.
+The iOSAppAdapter integrates your iOS devices with ioBroker, allowing seamless communication and data exchange through WebSockets. This adapter supports device data synchronization, real-time notifications, and device status monitoring.
 
-## Developer manual
-This section is intended for the developer. It can be deleted later.
+### Features
 
-### DISCLAIMER
+- **WebSocket Integration**: Establishes a WebSocket server for real-time communication between ioBroker and iOS devices.
+- **Device Management**: Manage and monitor multiple iOS devices and their statuses.
+- **Real-time Notifications**: Send notifications to iOS devices.
+- **Persistent Messaging**: Queues messages for offline devices and delivers them when they reconnect.
+- **Connection Monitoring**: Regularly pings devices to ensure active connections and updates their status accordingly.
 
-Please make sure that you consider copyrights and trademarks when you use names or logos of a company and add a disclaimer to your README.
-You can check other adapters for examples or ask in the developer community. Using a name or logo of a company without permission may cause legal problems for you.
+### Configuration
 
-### Getting started
+To configure the iOSAppAdapter, you need to provide the following settings:
 
-You are almost done, only a few steps left:
-1. Clone the repository from GitHub to a directory on your PC:
-	```bash
-	git clone https://github.com/DNAngelX/ioBroker.iosapp
-	```
+- **Username**: The username for authentication.
+- **Password**: The password for authentication.
+- **WebSocket Port**: The port on which the WebSocket server will listen (default: 9192).
 
-1. Head over to [main.js](main.js) and start programming!
+### Object Structure
 
-### Best Practices
-We've collected some [best practices](https://github.com/ioBroker/ioBroker.repositories#development-and-coding-best-practices) regarding ioBroker development and coding in general. If you're new to ioBroker or Node.js, you should
-check them out. If you're already experienced, you should also take a look at them - you might learn something new :)
+The adapter creates and manages objects under the `iosapp` namespace. The object structure is as follows:
 
-### Scripts in `package.json`
-Several npm scripts are predefined for your convenience. You can run them using `npm run <scriptname>`
-| Script name | Description |
-|-------------|-------------|
-| `test:js` | Executes the tests you defined in `*.test.js` files. |
-| `test:package` | Ensures your `package.json` and `io-package.json` are valid. |
-| `test:integration` | Tests the adapter startup with an actual instance of ioBroker. |
-| `test` | Performs a minimal test run on package files and your tests. |
-| `check` | Performs a type-check on your code (without compiling anything). |
-| `lint` | Runs `ESLint` to check your code for formatting errors and potential bugs. |
-| `translate` | Translates texts in your adapter to all required languages, see [`@iobroker/adapter-dev`](https://github.com/ioBroker/adapter-dev#manage-translations) for more details. |
-| `release` | Creates a new release, see [`@alcalzone/release-script`](https://github.com/AlCalzone/release-script#usage) for more details. |
+- `iosapp.0.person.<person>.<device>.ws_device_id`: Stores the WebSocket device ID.
+- `iosapp.0.person.<person>.<device>.connection`: Indicates the connection status (true/false).
+- `iosapp.0.messages`: General messages sent to all devices.
+- `iosapp.0.person.<person>.messages`: Messages specific to a person.
+- `iosapp.0.person.<person>.<device>.messages`: Messages specific to a person's device.
 
-### Writing tests
-When done right, testing code is invaluable, because it gives you the 
-confidence to change your code while knowing exactly if and when 
-something breaks. A good read on the topic of test-driven development 
-is https://hackernoon.com/introduction-to-test-driven-development-tdd-61a13bc92d92. 
-Although writing tests before the code might seem strange at first, but it has very 
-clear upsides.
-
-The template provides you with basic tests for the adapter startup and package files.
-It is recommended that you add your own tests into the mix.
-
-### Publishing the adapter
-Using GitHub Actions, you can enable automatic releases on npm whenever you push a new git tag that matches the form 
-`v<major>.<minor>.<patch>`. We **strongly recommend** that you do. The necessary steps are described in `.github/workflows/test-and-release.yml`.
-
-Since you installed the release script, you can create a new
-release simply by calling:
-```bash
-npm run release
-```
-Additional command line options for the release script are explained in the
-[release-script documentation](https://github.com/AlCalzone/release-script#command-line).
-
-To get your adapter released in ioBroker, please refer to the documentation 
-of [ioBroker.repositories](https://github.com/ioBroker/ioBroker.repositories#requirements-for-adapter-to-get-added-to-the-latest-repository).
-
-### Test the adapter manually with dev-server
-Please use `dev-server` to test and debug your adapter.
-
-You may install and start `dev-server` by calling from your dev directory:
-```bash
-npm install --global @iobroker/dev-server
-dev-server setup
-dev-server watch
-```
-
-Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev-server#readme) for more details.
 
 ## Changelog
 <!--
-	Placeholder for the next version (at the beginning of the line):
-	### **WORK IN PROGRESS**
+    Placeholder for the next version (at the beginning of the line):
+    ### **WORK IN PROGRESS**
 -->
-
 ### **WORK IN PROGRESS**
+* (DNAngelX) Stable BETA Release
+* (DNAngelX) Messanges fix
+* (DNAngelX) changed namespace
+* (DNAngelX) online state for single devices fix
+
+### 0.2.1 (2024-07-19)
+* (DNAngelX) UI Fix
+
+### 0.2.0 (2024-07-19)
+* (DNAngelX) Change Rest 2 Websockets
+* Improvements in Cache Messages etc.
+
+### 0.1.0 (2024-07-07)
+* (DNAngelX) Apple Push Service APN added
+
+### 0.0.6 (2024-07-06)
+* (DNAngelX) integration checks: true
+
+### 0.0.5 (2024-07-06)
+* (DNAngelX) bugfix ws
+
+### 0.0.3 (2024-07-06)
+* (DNAngelX) bugfix ports
+
+### 0.0.2 (2024-07-01)
 * (DNAngelX) initial release
 
 ## License
