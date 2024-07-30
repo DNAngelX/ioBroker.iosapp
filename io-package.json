@@ -1,0 +1,85 @@
+{
+	"common": {
+		"name": "iosapp",
+		"version": "0.0.1",
+		"news": {
+			"0.0.1": {
+				"en": "initial release",
+				"de": "Erstveröffentlichung",
+				"ru": "Начальная версия",
+				"pt": "lançamento inicial",
+				"nl": "Eerste uitgave",
+				"fr": "Première version",
+				"it": "Versione iniziale",
+				"es": "Versión inicial",
+				"pl": "Pierwsze wydanie",
+				"zh-cn": "首次出版"
+			}
+		},
+		"title": "iOS Devices - ioBroker App",
+		"titleLang": {
+			"en": "iOS Devices - ioBroker App",
+			"de": "iOS Devices - ioBroker App",
+			"ru": "iOS Devices - ioBroker App",
+			"pt": "iOS Devices - ioBroker App",
+			"nl": "iOS Devices - ioBroker App",
+			"fr": "iOS Devices - ioBroker App",
+			"it": "iOS Devices - ioBroker App",
+			"es": "iOS Devices - ioBroker App",
+			"pl": "iOS Devices - ioBroker App",
+			"zh-cn": "iOS Devices - ioBroker App"
+		},
+		"desc": {
+			"en": "This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data.",
+			"de": "This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data.",
+			"ru": "This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data.",
+			"pt": "This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data.",
+			"nl": "This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data.",
+			"fr": "This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data.",
+			"it": "This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data.",
+			"es": "This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data.",
+			"pl": "This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data.",
+			"zh-cn": "This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data."
+		},
+		"authors": [
+			"DNAngelX <stolly82@web.de>"
+		],
+		"keywords": [
+			"ios",
+			"iobroker",
+			"app",
+			"sensors",
+			"location",
+			"notifications"
+		],
+		"license": "MIT",
+		"platform": "Javascript/Node.js",
+		"main": "main.js",
+		"icon": "iosapp.png",
+		"enabled": true,
+		"extIcon": "https://raw.githubusercontent.com/DNAngelX/ioBroker.iosapp/main/admin/iosapp.png",
+		"readme": "https://github.com/DNAngelX/ioBroker.iosapp/blob/main/README.md",
+		"loglevel": "info",
+		"mode": "daemon",
+		"type": "geoposition",
+		"compact": true,
+		"connectionType": "local",
+		"dataSource": "push",
+		"adminUI": {
+			"config": "materialize"
+		},
+		"dependencies": [
+			{
+				"js-controller": ">=3.3.22"
+			}
+		],
+		"globalDependencies": [
+			{
+				"admin": ">=5.0.0"
+			}
+		]
+	},
+	"native": {},
+	"objects": [],
+	"instanceObjects": []
+}
