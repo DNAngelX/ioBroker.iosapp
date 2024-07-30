@@ -46,7 +46,7 @@ The adapter creates and manages objects under the `iosapp` namespace. The object
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.0 (2024-07-30)
 * (DNAngelX) Stable BETA Release
 * (DNAngelX) Messanges fix
 * (DNAngelX) changed namespace
