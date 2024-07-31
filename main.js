@@ -429,6 +429,8 @@ class Iosapp extends utils.Adapter {
             switch (action) {
                 case 'setDeviceToken':
                     const deviceToken = data.deviceToken;
+                    const person = data.person;
+                    const device = data.device;
                     socket.clientId = clientId;
                     socket.deviceToken = deviceToken;
     
@@ -468,7 +470,7 @@ class Iosapp extends utils.Adapter {
                     });
     
                     await this.setStateAsync(`${this.namespace}.person.${person}.${device}.ws_device_id`, clientId, true);
-                    await this.setConnectionState(`${person}.${device}`, true);
+                    await this.setConnectionState(clientId, true);
                     socket.send(JSON.stringify({ action: 'setDeviceToken', success: true }));
                     this.sendQueuedMessages(socket);
                     break;
@@ -759,10 +761,9 @@ class Iosapp extends utils.Adapter {
     
             this.log.warn(`No person/device found for ws_device_id: ${wsDeviceId}`);
         } catch (err) {
-            this.log.error(`Error setting connection state for ws_device_id ${wsDeviceId}: ${err.message}`);
+            this.log.error(`Error setting connection state for wsDeviceId ${wsDeviceId}: ${err.message}`);
         }
     }
-    
     
     
     
