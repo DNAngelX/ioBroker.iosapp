@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "iosapp",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "news": {
+      "1.0.3": {
+        "en": "Websocket disconnection fix",
+        "de": "Websocket Trennfix",
+        "ru": "Отключение Websocket",
+        "pt": "Correção de desconexão Websocket",
+        "nl": "Websocket loskoppelingsfix",
+        "fr": "Correction de déconnexion Websocket",
+        "it": "Correzione di scollegamento di Websocket",
+        "es": "Corrección de desconexión Websocket",
+        "pl": "Rozwiązanie rozłączenia websocket",
+        "uk": "Виправлення відключення Websocket",
+        "zh-cn": "Websocket 断开"
+      },
       "1.0.2": {
         "en": "Websocket deviceID fix",
         "de": "Websocket Gerät ID fix",
