@@ -722,8 +722,8 @@ class Iosapp extends utils.Adapter {
             }
         }
     }
-
-    async setConnectionStateXXX(wsDeviceId, connected) {
+    
+    async setConnectionState(wsDeviceId, connected) {
         try {
             const persons = await this.getForeignObjectsAsync(`${this.namespace}.person.*`, 'channel');
             
@@ -759,27 +759,10 @@ class Iosapp extends utils.Adapter {
     
             this.log.warn(`No person/device found for ws_device_id: ${wsDeviceId}`);
         } catch (err) {
-            this.log.error(`Error setting connection state for wsDeviceId ${wsDeviceId}: ${err.message}`);
+            this.log.error(`Error setting connection state for ws_device_id ${wsDeviceId}: ${err.message}`);
         }
     }
     
-    async setConnectionState(wsDeviceId, connected) {
-        try {
-            const states = await this.getStatesAsync(`${this.namespace}.person.*.*.ws_device_id`);
-            const state = Object.entries(states).find(([, state]) => state && state.val === wsDeviceId);
-    
-            if (state) {
-                const [stateId] = state;
-                const devicePath = stateId.split('.').slice(2, 4).join('.');
-                const connectionPath = `${this.namespace}.person.${devicePath}.connection`;
-                await this.setStateAsync(connectionPath, connected, true);
-            } else {
-                this.log.error(`Error setting connection state for ws_device_id ${wsDeviceId}: Cannot find corresponding state`);
-            }
-        } catch (error) {
-            this.log.error(`Error setting connection state for ws_device_id ${wsDeviceId}: ${error.message}`);
-        }
-    }
     
     
     
