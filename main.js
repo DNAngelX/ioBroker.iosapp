@@ -369,11 +369,6 @@ class Iosapp extends utils.Adapter {
         this.wsServer.on('connection', (socket) => {
             this.log.info('WebSocket connection established.');
     
-            socket.isAlive = true;
-            socket.on('pong', () => {
-                socket.isAlive = true;
-            });
-    
             socket.on('message', (message) => {
                 this.log.info(`Received message: ${message}`);
                 this.handleWebSocketMessage(socket, message);
@@ -383,12 +378,13 @@ class Iosapp extends utils.Adapter {
                 this.log.info('WebSocket connection closed.');
                 this.clients.forEach((client, id) => {
                     if (client === socket) {
-                        const [person, device] = id.split('.');
-                        this.clients.delete(id);
                         this.setConnectionState(id, false);
+                        this.clients.delete(id);
                     }
                 });
             });
+    
+            this.startPingInterval(socket);
         });
     
         this.wsServer.on('error', (error) => {
@@ -396,25 +392,29 @@ class Iosapp extends utils.Adapter {
         });
     
         this.log.info(`WebSocket server listening on port ${wsPort}`);
+    }
+
+    startPingInterval(socket) {
+        socket.isAlive = true;
+        socket.on('pong', () => {
+            socket.isAlive = true;
+        });
     
         const interval = setInterval(() => {
-            this.wsServer.clients.forEach((socket) => {
+            if (socket.readyState === WebSocket.OPEN) {
                 if (!socket.isAlive) {
+                    this.log.info('WebSocket connection lost. Terminating socket.');
                     socket.terminate();
-                    const clientId = socket.clientId;
-                    if (clientId) {
-                        const [person, device] = clientId.split('.');
-                        this.setConnectionState(socket.clientId, false);
-                    }
+                    clearInterval(interval);
+                } else {
+                    socket.isAlive = false;
+                    socket.ping();
                 }
-    
-                socket.isAlive = false;
-                socket.ping();
-            });
-        }, 30000);
+            } else {
+                clearInterval(interval);
+            }
+        }, 30000); // 30 seconds
     }
-    
-    
 
     async handleWebSocketMessage(socket, message) {
         try {
@@ -429,12 +429,20 @@ class Iosapp extends utils.Adapter {
             switch (action) {
                 case 'setDeviceToken':
                     const deviceToken = data.deviceToken;
-                    const person = data.person;
-                    const device = data.device;
                     socket.clientId = clientId;
                     socket.deviceToken = deviceToken;
+    
+                    // Check if there is an existing connection with the same clientId
+                    if (this.clients.has(clientId)) {
+                        const existingSocket = this.clients.get(clientId);
+                        if (existingSocket !== socket) {
+                            // Close the old socket connection
+                            existingSocket.terminate();
+                        }
+                    }
+    
                     this.clients.set(clientId, socket);
-
+    
                     await this.setObjectNotExistsAsync(`${this.namespace}.person.${person}.${device}.ws_device_id`, {
                         type: 'state',
                         common: {
@@ -446,7 +454,7 @@ class Iosapp extends utils.Adapter {
                         },
                         native: {},
                     });
-
+    
                     await this.setObjectNotExistsAsync(`${this.namespace}.person.${person}.${device}.connection`, {
                         type: 'state',
                         common: {
@@ -458,10 +466,9 @@ class Iosapp extends utils.Adapter {
                         },
                         native: {},
                     });
-
-
+    
                     await this.setStateAsync(`${this.namespace}.person.${person}.${device}.ws_device_id`, clientId, true);
-                    this.setConnectionState(clientId, true);
+                    await this.setConnectionState(`${person}.${device}`, true);
                     socket.send(JSON.stringify({ action: 'setDeviceToken', success: true }));
                     this.sendQueuedMessages(socket);
                     break;
@@ -716,7 +723,7 @@ class Iosapp extends utils.Adapter {
         }
     }
 
-    async setConnectionState(wsDeviceId, connected) {
+    async setConnectionStateXXX(wsDeviceId, connected) {
         try {
             const persons = await this.getForeignObjectsAsync(`${this.namespace}.person.*`, 'channel');
             
@@ -756,7 +763,23 @@ class Iosapp extends utils.Adapter {
         }
     }
     
+    async setConnectionState(wsDeviceId, connected) {
+        try {
+            const states = await this.getStatesAsync(`${this.namespace}.person.*.*.ws_device_id`);
+            const state = Object.entries(states).find(([, state]) => state && state.val === wsDeviceId);
     
+            if (state) {
+                const [stateId] = state;
+                const devicePath = stateId.split('.').slice(2, 4).join('.');
+                const connectionPath = `${this.namespace}.person.${devicePath}.connection`;
+                await this.setStateAsync(connectionPath, connected, true);
+            } else {
+                this.log.error(`Error setting connection state for ws_device_id ${wsDeviceId}: Cannot find corresponding state`);
+            }
+        } catch (error) {
+            this.log.error(`Error setting connection state for ws_device_id ${wsDeviceId}: ${error.message}`);
+        }
+    }
     
     
     

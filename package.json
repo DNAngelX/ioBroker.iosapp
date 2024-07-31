@@ -23,7 +23,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:DNAngelX/ioBroker.iosapp.git"
+    "url": "git+ssh://git@github.com/DNAngelX/ioBroker.iosapp.git"
   },
   "engines": {
     "node": ">= 14"
