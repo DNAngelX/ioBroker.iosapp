@@ -1,6 +1,6 @@
 {
   "name": "iobroker.iosapp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This adapter integrates an iOS app with IoBroker, providing WebSocket endpoints for device data.",
   "author": {
     "name": "DNAngelX",

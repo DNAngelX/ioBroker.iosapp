@@ -46,7 +46,7 @@ The adapter creates and manages objects under the `iosapp` namespace. The object
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.2 (2024-07-31)
 * (DNAngelX) Websocket deviceID fix
 
 ### 1.0.1 (2024-07-31)
