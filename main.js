@@ -201,7 +201,9 @@ class Iosapp extends utils.Adapter {
                         type: sensor.type,
                         role: sensor.role || 'value',
                         unit: sensor.unit || '',
-                        states: sensor.states || undefined
+                        states: sensor.states || undefined,
+                        read: true,
+                        write: false
                     },
                     native: {},
                 });
